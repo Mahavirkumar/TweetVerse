@@ -1,4 +1,8 @@
 package com.example.tweetverse
 
-class TweetVerse {
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
+
+@HiltAndroidApp
+class TweetVerse:Application() {
 }
