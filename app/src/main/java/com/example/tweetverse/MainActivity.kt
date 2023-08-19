@@ -11,6 +11,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.tweetverse.api.TweetVerseAPI
 import com.example.tweetverse.screens.CategoryScreen
 import com.example.tweetverse.screens.DetailScreen
@@ -28,15 +33,37 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         GlobalScope.launch {
-            val response=tweetVerseAPI.getCategories()
-            Log.d("mk",response.body().toString())
+            val response = tweetVerseAPI.getCategories()
+            Log.d("mk", response.body().toString())
         }
 
         setContent {
             TweetVerseTheme {
 //              CategoryScreen()
-                DetailScreen()
+//                DetailScreen()
+                App()
             }
+        }
+    }
+}
+
+@Composable
+fun App() {
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = "category") {
+        composable(route = "category") {
+            CategoryScreen {
+             navController.navigate("detail/${it}")
+            }
+        }
+        composable(
+            route = "detail/{category}", arguments = listOf(
+                navArgument("category"){
+                    type= NavType.StringType
+                }
+            )
+        ) {
+            DetailScreen()
         }
     }
 }
