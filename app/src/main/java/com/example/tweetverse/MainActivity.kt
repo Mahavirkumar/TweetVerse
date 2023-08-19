@@ -4,12 +4,20 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material.*
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -30,6 +38,7 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var tweetVerseAPI: TweetVerseAPI
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         GlobalScope.launch {
@@ -39,9 +48,17 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             TweetVerseTheme {
-//              CategoryScreen()
-//                DetailScreen()
-                App()
+                Scaffold(
+                    topBar = {
+                        TopAppBar(title = {
+                            Text(text = "TweetVerse")
+                        })
+                    }
+                ) {
+                    Box(modifier = Modifier.padding(it)){
+                        App()
+                    }
+                }
             }
         }
     }
@@ -53,13 +70,13 @@ fun App() {
     NavHost(navController = navController, startDestination = "category") {
         composable(route = "category") {
             CategoryScreen {
-             navController.navigate("detail/${it}")
+                navController.navigate("detail/${it}")
             }
         }
         composable(
             route = "detail/{category}", arguments = listOf(
-                navArgument("category"){
-                    type= NavType.StringType
+                navArgument("category") {
+                    type = NavType.StringType
                 }
             )
         ) {

@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -32,26 +33,36 @@ import com.example.tweetverse.R
 import com.example.tweetverse.viewmodels.CategoryViewModel
 import kotlinx.coroutines.flow.StateFlow
 
-
+@Preview
 @Composable
-fun CategoryScreen(onClick:(category:String)->Unit) {
+fun CategoryScreen(onClick: (category: String) -> Unit) {
 
-    val categoryViewModel:CategoryViewModel= hiltViewModel()
-    val categories=categoryViewModel.categories.collectAsState()
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(8.dp),
-        verticalArrangement = Arrangement.SpaceAround
-    ){
-        items(categories.value.distinct()){
-            CategoryItem(category = it, onClick)
+    val categoryViewModel: CategoryViewModel = hiltViewModel()
+    val categories = categoryViewModel.categories.collectAsState()
+    if (categories.value.isEmpty()) {
+        Box(
+            modifier = Modifier.fillMaxSize(1f),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(text = "Loading...", style = MaterialTheme.typography.bodySmall)
+        }
+    } else {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.SpaceAround
+        ) {
+            items(categories.value.distinct()) {
+                CategoryItem(category = it, onClick)
+            }
         }
     }
+
 
 }
 
 @Composable
-fun CategoryItem(category: String,onClick:(category:String)->Unit) {
+fun CategoryItem(category: String, onClick: (category: String) -> Unit) {
     Box(
         modifier = Modifier
             .padding(4.dp)
